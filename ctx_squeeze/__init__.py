@@ -2,6 +2,7 @@
 
 from .compactor import STRATEGIES, SqueezeResult, squeeze
 from .dedupe import dedupe_segments, find_near_duplicates, jaccard, shingles
+from .messages import Message, PruneResult, message_text, parse_messages, prune_messages, to_dicts
 from .scoring import score_segments, select_by_score
 from .segments import Segment, join_segments, split_segments
 from .tokens import estimate_tokens, fits_budget, truncate_to_tokens
@@ -10,6 +11,8 @@ __version__ = "0.1.0"
 
 __all__ = [
     "STRATEGIES",
+    "Message",
+    "PruneResult",
     "Segment",
     "SqueezeResult",
     "__version__",
@@ -19,10 +22,14 @@ __all__ = [
     "fits_budget",
     "jaccard",
     "join_segments",
+    "message_text",
+    "parse_messages",
+    "prune_messages",
     "score_segments",
     "select_by_score",
     "shingles",
     "split_segments",
     "squeeze",
+    "to_dicts",
     "truncate_to_tokens",
 ]
