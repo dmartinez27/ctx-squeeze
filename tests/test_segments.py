@@ -40,3 +40,29 @@ def test_join_segments_uses_the_given_separator():
     segments = split_segments("one\n\ntwo\n\nthree")
     assert join_segments(segments) == "one\n\ntwo\n\nthree"
     assert join_segments(segments, separator=" | ") == "one | two | three"
+
+
+def test_join_segments_of_empty_list():
+    assert join_segments([]) == ""
+
+
+def test_split_segments_keeps_tilde_fenced_code_blocks_intact():
+    text = "before\n\n~~~\ncode line\n~~~\n\nafter"
+    segments = split_segments(text)
+    assert [s.kind for s in segments] == ["text", "code", "text"]
+    assert segments[1].text == "~~~\ncode line\n~~~"
+
+
+def test_split_segments_detects_an_indented_fence_marker():
+    text = "before\n\n  ```\n  code\n  ```\n\nafter"
+    segments = split_segments(text)
+    assert [s.kind for s in segments] == ["text", "code", "text"]
+    assert segments[1].text == "  ```\n  code\n  ```"
+
+
+def test_split_segments_only_a_matching_fence_style_closes_a_block():
+    text = "```\ncode\n~~~\nmore code\n```"
+    segments = split_segments(text)
+    assert len(segments) == 1
+    assert segments[0].kind == "code"
+    assert segments[0].text == text

@@ -52,3 +52,18 @@ def test_truncate_reserves_room_for_the_suffix():
     truncated = truncate_to_tokens("cat dog bird fish", 3, suffix="...")
     assert truncated == "cat..."
     assert estimate_tokens(truncated) <= 3
+
+
+def test_truncate_returns_empty_when_the_suffix_alone_exceeds_the_budget():
+    assert truncate_to_tokens("cat dog bird fish", 1, suffix="...") == ""
+
+
+def test_carriage_return_is_free_like_other_horizontal_whitespace():
+    assert estimate_tokens("cat\r\ndog") == estimate_tokens("cat\ndog")
+
+
+def test_straight_and_curly_apostrophes_both_stay_inside_the_word():
+    # If the apostrophe split the word in two, this would cost 3 tokens
+    # instead of 2: "don" + symbol + "t" rather than one 5-char word.
+    assert estimate_tokens("don't") == 2
+    assert estimate_tokens("don’t") == 2
