@@ -116,6 +116,17 @@ def test_main_missing_input_file_is_a_parser_error(tmp_path, capsys):
     assert "No such file" in capsys.readouterr().err
 
 
+def test_main_non_utf8_input_is_a_parser_error(tmp_path, capsys):
+    src = tmp_path / "blob.bin"
+    src.write_bytes(b"\xff\xfe\x00\x80 not text")
+
+    with pytest.raises(SystemExit) as excinfo:
+        main([str(src), "--budget", "100"])
+
+    assert excinfo.value.code == 2
+    assert "cannot read" in capsys.readouterr().err
+
+
 def test_main_messages_mode_plain_output(tmp_path, capsys):
     transcript = [
         {"role": "system", "content": "be helpful"},

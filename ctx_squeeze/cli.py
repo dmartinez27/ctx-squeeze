@@ -161,8 +161,9 @@ def main(argv=None):
 
     try:
         text = _read_input(args.input)
-    except OSError as exc:
-        parser.error(str(exc))
+    except (OSError, UnicodeDecodeError) as exc:
+        # Binary or non-UTF-8 input would otherwise escape as a traceback.
+        parser.error("cannot read %s: %s" % (args.input, exc))
 
     try:
         if args.messages:
